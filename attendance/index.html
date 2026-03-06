@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Proxy Attendance Portal — Submit Permission</title>
+    <meta name="description"
+        content="Submit permission letters transparently and maintain attendance integrity. No Proxy Attendance Portal.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <div class="navbar-logo">NP</div>
+            <span class="navbar-title">No Proxy Portal</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="/" class="active">📝 Submit</a></li>
+            <li><a href="/admin">🔒 Admin</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>Academic Integrity Portal</span>
+        </div>
+        <h1>
+            <span class="gradient-text">No Proxy</span> Attendance Portal
+        </h1>
+        <p class="tagline">
+            Submit permission letters transparently and maintain attendance integrity.
+            Every submission is securely recorded and verified.
+        </p>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Success/Error Messages -->
+        <div id="alertBox"></div>
+
+        <!-- Submission Form -->
+        <div class="card fade-in-delay-1">
+            <div class="card-header">
+                <div class="card-icon">📄</div>
+                <div>
+                    <h2>Submit Permission Letter</h2>
+                    <p>Fill in the details and upload your permission document</p>
+                </div>
+            </div>
+
+            <form id="submissionForm">
+                <!-- Roll Number -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Roll Number <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" id="rollNumber" name="rollNumber"
+                        placeholder="e.g., 2024-CS-101" required autocomplete="off">
+                </div>
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="studentName" name="name"
+                        placeholder="e.g., Mohammad Ahmed" autocomplete="name">
+                </div>
+
+                <!-- Reason -->
+                <div class="form-group">
+                    <label class="form-label">Reason for Absence</label>
+                    <textarea class="form-textarea" id="reason" name="reason"
+                        placeholder="Briefly explain the reason for your absence (optional)..." rows="3"></textarea>
+                </div>
+
+                <!-- File Upload -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Permission Letter <span class="required">*</span>
+                    </label>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="permissionFile" name="permissionFile"
+                            accept=".pdf,.jpg,.jpeg,.png,.webp,.gif" required>
+                        <div class="upload-icon">📎</div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                        <div class="upload-hint">PDF, JPG, PNG, WEBP — Max 10MB</div>
+                        <div class="upload-filename" id="fileName">
+                            <span>📄</span>
+                            <span id="fileNameText"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+                    <span id="submitText">Submit Permission Letter</span>
+                    <span id="submitSpinner" class="spinner" style="display:none;"></span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="stats-bar fade-in-delay-2" style="margin-top: 2rem;">
+            <div class="stat-card">
+                <div class="stat-icon blue">🔒</div>
+                <div>
+                    <div class="stat-label">Secure Upload</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">Files stored safely
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✅</div>
+                <div>
+                    <div class="stat-label">Verified Records</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">Timestamped entries
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">📊</div>
+                <div>
+                    <div class="stat-label">Transparent</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">Admin oversight</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>No Proxy Attendance Portal &copy; 2026 — Academic Integrity System</p>
+    </footer>
+
+    <script>
+        // ─── DOM Elements ────────────────────────────────────────
+        const form = document.getElementById('submissionForm');
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('permissionFile');
+        const fileName = document.getElementById('fileName');
+        const fileNameText = document.getElementById('fileNameText');
+        const alertBox = document.getElementById('alertBox');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitSpinner = document.getElementById('submitSpinner');
+
+        // ─── File Upload Handling ─────────────────────────────────
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                fileNameText.textContent = file.name;
+                uploadZone.classList.add('has-file');
+            } else {
+                uploadZone.classList.remove('has-file');
+            }
+        });
+
+        // Drag & Drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('drag-over');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('drag-over');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                fileNameText.textContent = e.dataTransfer.files[0].name;
+                uploadZone.classList.add('has-file');
+            }
+        });
+
+        // ─── Show Alert ──────────────────────────────────────────
+        function showAlert(type, message) {
+            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+            alertBox.innerHTML = `
+        <div class="alert alert-${type}">
+          <span>${icons[type]}</span>
+          <span>${message}</span>
+        </div>
+      `;
+            setTimeout(() => { alertBox.innerHTML = ''; }, 5000);
+        }
+
+        // ─── Form Submission ─────────────────────────────────────
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const rollNumber = document.getElementById('rollNumber').value.trim();
+            const file = fileInput.files[0];
+
+            if (!rollNumber) {
+                showAlert('error', 'Please enter your roll number.');
+                return;
+            }
+            if (!file) {
+                showAlert('error', 'Please upload your permission letter.');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitText.textContent = 'Submitting...';
+            submitSpinner.style.display = 'inline-block';
+
+            const formData = new FormData();
+            formData.append('rollNumber', rollNumber);
+            formData.append('name', document.getElementById('studentName').value.trim());
+            formData.append('reason', document.getElementById('reason').value.trim());
+            formData.append('permissionFile', file);
+
+            try {
+                const res = await fetch('/api/submit', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    showAlert('success', data.message);
+                    form.reset();
+                    uploadZone.classList.remove('has-file');
+                } else {
+                    showAlert('error', data.error || 'Submission failed. Please try again.');
+                }
+            } catch (err) {
+                showAlert('error', 'Network error. Please check your connection.');
+            } finally {
+                submitBtn.disabled = false;
+                submitText.textContent = 'Submit Permission Letter';
+                submitSpinner.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
