@@ -1,4 +1,4 @@
-# No Proxy Attendance Portal (Vercel Edition)
+# Attendly (Vercel Edition)
 
 > Submit permission letters transparently and maintain attendance integrity.
 
